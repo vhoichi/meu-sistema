@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { SESSION_COOKIE } from "@/lib/auth";
+import { SESSION_COOKIE } from "@/lib/sessionCookie";
 
 /**
  * Lightweight edge guard: redirects based only on the PRESENCE of the session
