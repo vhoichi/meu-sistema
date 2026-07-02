@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import {
   Bar,
   BarChart,
@@ -15,6 +16,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import CountUp from "@/components/reactbits/CountUp/CountUp";
+import SpotlightCard from "@/components/reactbits/SpotlightCard/SpotlightCard";
+import ShinyText from "@/components/reactbits/ShinyText/ShinyText";
+import FadeContent from "@/components/reactbits/FadeContent/FadeContent";
+
+// WebGL background: client-only to avoid SSR of the canvas.
+const Aurora = dynamic(
+  () => import("@/components/reactbits/Aurora/Aurora"),
+  { ssr: false }
+);
 
 type Drink = {
   country: string;
@@ -133,8 +144,18 @@ export default function Dashboard({ email }: { email: string }) {
 
   return (
     <>
+      <div className="aurora-bg aurora-bg--dashboard">
+        <Aurora
+          colorStops={["#5227FF", "#6366F1", "#22d3ee"]}
+          amplitude={0.8}
+          blend={0.5}
+        />
+      </div>
+
       <div className="topbar">
-        <span className="brand">🍺 Meu Sistema</span>
+        <span className="brand">
+          🍺 <ShinyText text="Meu Sistema" speed={4} />
+        </span>
         <div>
           <span className="user">{email}</span>
           <button className="btn btn-ghost" onClick={handleLogout} type="button">
@@ -192,37 +213,59 @@ export default function Dashboard({ email }: { email: string }) {
               )}
             </div>
 
-            <div className="cards">
-              <div className="stat-card">
+            <FadeContent className="cards" duration={800}>
+              <SpotlightCard
+                className="stat-spotlight"
+                spotlightColor="rgba(99, 102, 241, 0.35)"
+              >
                 <div className="label">Países</div>
-                <div className="value">{totalCountries}</div>
-              </div>
-              <div className="stat-card">
+                <div className="value">
+                  <CountUp to={totalCountries} separator="." />
+                </div>
+              </SpotlightCard>
+              <SpotlightCard
+                className="stat-spotlight"
+                spotlightColor="rgba(34, 211, 238, 0.35)"
+              >
                 <div className="label">Média de litros de álcool puro</div>
-                <div className="value">{avgLitres.toFixed(1)} L</div>
-              </div>
-              <div className="stat-card">
+                <div className="value">
+                  <CountUp to={Number(avgLitres.toFixed(1))} /> L
+                </div>
+              </SpotlightCard>
+              <SpotlightCard
+                className="stat-spotlight"
+                spotlightColor="rgba(167, 139, 250, 0.35)"
+              >
                 <div className="label">Maior consumo</div>
                 <div className="value" style={{ fontSize: 18 }}>
                   {topCountry?.country}
                   <span style={{ color: "var(--muted)", fontWeight: 400 }}>
                     {" "}
-                    ({topCountry?.total_litres_of_pure_alcohol} L)
+                    (
+                    <CountUp
+                      to={topCountry?.total_litres_of_pure_alcohol ?? 0}
+                    />{" "}
+                    L)
                   </span>
                 </div>
-              </div>
-              <div className="stat-card">
+              </SpotlightCard>
+              <SpotlightCard
+                className="stat-spotlight"
+                spotlightColor="rgba(236, 72, 153, 0.35)"
+              >
                 <div className="label">Total de doses (todas as bebidas)</div>
                 <div className="value">
-                  {(totalBeer + totalSpirit + totalWine).toLocaleString(
-                    "pt-BR"
-                  )}
+                  <CountUp
+                    to={totalBeer + totalSpirit + totalWine}
+                    separator="."
+                  />
                 </div>
-              </div>
-            </div>
+              </SpotlightCard>
+            </FadeContent>
 
-            <div className="chart-card">
-              <h3>Top 15 países — litros de álcool puro per capita</h3>
+            <FadeContent delay={120} duration={800}>
+              <div className="chart-card">
+                <h3>Top 15 países — litros de álcool puro per capita</h3>
               <ResponsiveContainer width="100%" height={420}>
                 <BarChart
                   data={top15}
@@ -249,9 +292,10 @@ export default function Dashboard({ email }: { email: string }) {
                   <Bar dataKey="litros" fill="#6366f1" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+              </div>
+            </FadeContent>
 
-            <div className="chart-grid">
+            <FadeContent className="chart-grid" delay={220} duration={800}>
               <div className="chart-card">
                 <h3>Distribuição global por tipo de bebida (doses)</h3>
                 <ResponsiveContainer width="100%" height={320}>
@@ -315,7 +359,7 @@ export default function Dashboard({ email }: { email: string }) {
                   </table>
                 </div>
               </div>
-            </div>
+            </FadeContent>
           </>
         )}
       </div>

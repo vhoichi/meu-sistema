@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import GradientText from "@/components/reactbits/GradientText/GradientText";
+import ShinyText from "@/components/reactbits/ShinyText/ShinyText";
+
+// WebGL background: render only on the client to avoid SSR of the canvas.
+const Aurora = dynamic(
+  () => import("@/components/reactbits/Aurora/Aurora"),
+  { ssr: false }
+);
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,9 +46,25 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrapper">
-      <div className="login-card">
-        <h1>Meu Sistema</h1>
-        <p className="subtitle">Consumo global de álcool</p>
+      <div className="aurora-bg">
+        <Aurora
+          colorStops={["#5227FF", "#6366F1", "#22d3ee"]}
+          amplitude={1.0}
+          blend={0.5}
+        />
+      </div>
+
+      <div className="login-card fade-in-up">
+        <GradientText
+          className="login-title"
+          colors={["#818cf8", "#22d3ee", "#a78bfa", "#818cf8"]}
+          animationSpeed={7}
+        >
+          Meu Sistema
+        </GradientText>
+        <p className="subtitle">
+          <ShinyText text="Consumo global de álcool" speed={4} />
+        </p>
 
         {!showForm ? (
           <button
