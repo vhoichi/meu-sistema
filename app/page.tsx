@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import GradientText from "@/components/reactbits/GradientText/GradientText";
 import ShinyText from "@/components/reactbits/ShinyText/ShinyText";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useTheme } from "@/lib/theme";
 
 // WebGL background: render only on the client to avoid SSR of the canvas.
 const Aurora = dynamic(
@@ -14,6 +16,7 @@ const Aurora = dynamic(
 
 export default function LoginPage() {
   const router = useRouter();
+  const { theme } = useTheme();
   const [showForm, setShowForm] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +49,8 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrapper">
+      <ThemeToggle />
+
       <div className="aurora-bg">
         <Aurora
           colorStops={["#7c3aed", "#ec4899", "#22d3ee"]}
@@ -63,7 +68,12 @@ export default function LoginPage() {
           Meu Sistema
         </GradientText>
         <p className="subtitle">
-          <ShinyText text="Consumo global de álcool" speed={4} />
+          <ShinyText
+            text="Consumo global de álcool"
+            speed={4}
+            color={theme === "light" ? "#475569" : "#b5b5b5"}
+            shineColor={theme === "light" ? "#0f172a" : "#ffffff"}
+          />
         </p>
 
         {!showForm ? (

@@ -20,6 +20,8 @@ import CountUp from "@/components/reactbits/CountUp/CountUp";
 import SpotlightCard from "@/components/reactbits/SpotlightCard/SpotlightCard";
 import ShinyText from "@/components/reactbits/ShinyText/ShinyText";
 import FadeContent from "@/components/reactbits/FadeContent/FadeContent";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useTheme } from "@/lib/theme";
 
 // WebGL background: client-only to avoid SSR of the canvas.
 const Aurora = dynamic(
@@ -47,6 +49,7 @@ const PIE_COLORS = ["#f59e0b", "#6366f1", "#ec4899"];
 
 export default function Dashboard({ email }: { email: string }) {
   const router = useRouter();
+  const { theme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [drinks, setDrinks] = useState<Drink[]>([]);
   const [upload, setUpload] = useState<UploadMeta | null>(null);
@@ -154,9 +157,16 @@ export default function Dashboard({ email }: { email: string }) {
 
       <div className="topbar">
         <span className="brand">
-          🍺 <ShinyText text="Meu Sistema" speed={4} />
+          🍺{" "}
+          <ShinyText
+            text="Meu Sistema"
+            speed={4}
+            color={theme === "light" ? "#475569" : "#b5b5b5"}
+            shineColor={theme === "light" ? "#0f172a" : "#ffffff"}
+          />
         </span>
-        <div>
+        <div className="topbar-actions">
+          <ThemeToggle variant="inline" />
           <span className="user">{email}</span>
           <button className="btn btn-ghost" onClick={handleLogout} type="button">
             Sair

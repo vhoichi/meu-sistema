@@ -15,12 +15,17 @@ persistir os dados no **Supabase** e visualizar o consumo global de álcool.
 
 Cada upload cria um registro em `uploads` e as linhas correspondentes em `drinks`.
 
+Um botão no canto superior direito da tela alterna entre **tema claro e escuro**
+(ver [Tema claro/escuro](#tema-claroescuro)).
+
 ## Stack
 
 - [Next.js 14](https://nextjs.org/) (App Router) + TypeScript
 - [Supabase](https://supabase.com/) (Postgres) — persistência
 - [Recharts](https://recharts.org/) — gráficos
 - [PapaParse](https://www.papaparse.com/) — parsing de CSV
+- [React Bits](https://reactbits.dev/) — animações e efeitos visuais (Aurora, GradientText,
+  ShinyText, CountUp, SpotlightCard, FadeContent, ClickSpark)
 - Autenticação simples via cookie de sessão assinado (HMAC), credenciais em env.
 
 ## Modelo de dados (Supabase)
@@ -80,6 +85,36 @@ Acesse http://localhost:3000.
 1. Importe o repositório no Vercel.
 2. Em **Settings → Environment Variables**, cadastre as mesmas variáveis do `.env.local`.
 3. Deploy. (Framework detectado automaticamente como Next.js.)
+
+## Tema claro/escuro
+
+Um botão circular (☀️/🌙) no canto superior direito alterna entre os temas:
+
+- **Login**: botão fixo no canto da tela (não há topbar nessa página).
+- **Dashboard**: botão dentro da topbar, junto ao e-mail do usuário e ao botão "Sair".
+
+Detalhes de implementação (`lib/theme.ts` + `components/ThemeToggle.tsx`):
+
+- O tema é guardado em `localStorage` (`theme` = `"dark"` ou `"light"`) e aplicado
+  via atributo `data-theme` no `<html>`. O padrão (sem atributo) é o tema escuro.
+- Um script inline no `<head>` (`app/layout.tsx`) aplica o tema salvo **antes do
+  primeiro paint**, evitando o "flash" do tema errado ao recarregar a página.
+- As variáveis CSS de cor (`--bg`, `--card`, `--text`, `--muted`, etc., em
+  `app/globals.css`) têm uma sobrescrita para `html[data-theme="light"]`; a
+  maior parte da UI já se adapta automaticamente por usar essas variáveis.
+- O fundo animado **Aurora** (WebGL) é bem atenuado no tema claro para não
+  lavar a página branca.
+- Textos com efeito **ShinyText** (marca "Meu Sistema" e subtítulo do login)
+  recebem cores explícitas por tema para manter contraste legível — o brilho
+  branco padrão do componente é ilegível sobre fundo claro.
+- A topbar do dashboard usa `flex-wrap` para o botão de tema, o e-mail e o
+  "Sair" quebrarem para uma segunda linha em telas estreitas, em vez de
+  sobrepor a marca "Meu Sistema".
+
+> ⚠️ Nem todo elemento é re-estilizado por tema (ex.: cores fixas do gráfico
+> Recharts, cor branca do brilho padrão do `SpotlightCard`). Esses casos foram
+> revisados e continuam legíveis em ambos os temas, mas novos componentes que
+> usem cores fixas (não as variáveis CSS) podem precisar do mesmo tratamento.
 
 ## Segurança
 
