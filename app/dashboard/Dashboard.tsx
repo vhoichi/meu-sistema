@@ -130,6 +130,7 @@ export default function Dashboard({ email }: { email: string }) {
   const totalBeer = drinks.reduce((s, d) => s + d.beer_servings, 0);
   const totalSpirit = drinks.reduce((s, d) => s + d.spirit_servings, 0);
   const totalWine = drinks.reduce((s, d) => s + d.wine_servings, 0);
+  const totalDoses = totalBeer + totalSpirit + totalWine;
 
   const top15 = drinks.slice(0, 15).map((d) => ({
     country: d.country,
@@ -308,11 +309,11 @@ export default function Dashboard({ email }: { email: string }) {
                       cy="50%"
                       outerRadius={110}
                       label={(entry) =>
-                        `${entry.name}: ${(
-                          (entry.value /
-                            (totalBeer + totalSpirit + totalWine)) *
-                          100
-                        ).toFixed(0)}%`
+                        `${entry.name}: ${
+                          totalDoses > 0
+                            ? ((entry.value / totalDoses) * 100).toFixed(0)
+                            : "0"
+                        }%`
                       }
                     >
                       {pieData.map((_, i) => (
