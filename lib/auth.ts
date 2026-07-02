@@ -80,8 +80,9 @@ export function checkCredentials(email: string, password: string): boolean {
 }
 
 /** Read the current session (email) from the request cookies, or null. */
-export function getSession(): string | null {
-  const token = cookies().get(SESSION_COOKIE)?.value;
+export async function getSession(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
   return verifySessionToken(token);
 }
 

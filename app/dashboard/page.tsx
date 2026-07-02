@@ -5,8 +5,8 @@ import Dashboard from "./Dashboard";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
-  const email = getSession();
+export default async function DashboardPage() {
+  const email = await getSession();
   if (!email) {
     redirect("/");
   }
