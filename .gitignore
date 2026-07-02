@@ -1,0 +1,42 @@
+# ---- Dependencies ----
+/node_modules
+/.pnp
+.pnp.js
+.yarn/*
+
+# ---- Next.js build output ----
+/.next/
+/out/
+/build
+next-env.d.ts.bak
+
+# ---- Environment / secrets ----
+# Never commit real credentials. Keep .env.example (safe placeholders) tracked.
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ---- Vercel ----
+.vercel
+
+# ---- Logs ----
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# ---- TypeScript ----
+*.tsbuildinfo
+
+# ---- OS / Editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# ---- Data files (do not commit uploaded / source datasets) ----
+*.csv
