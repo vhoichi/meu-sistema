@@ -146,8 +146,8 @@ export default function Dashboard({ email }: { email: string }) {
     <>
       <div className="aurora-bg aurora-bg--dashboard">
         <Aurora
-          colorStops={["#5227FF", "#6366F1", "#22d3ee"]}
-          amplitude={0.8}
+          colorStops={["#6366F1", "#a78bfa", "#22d3ee"]}
+          amplitude={1.0}
           blend={0.5}
         />
       </div>

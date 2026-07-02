@@ -48,8 +48,8 @@ export default function LoginPage() {
     <div className="login-wrapper">
       <div className="aurora-bg">
         <Aurora
-          colorStops={["#5227FF", "#6366F1", "#22d3ee"]}
-          amplitude={1.0}
+          colorStops={["#7c3aed", "#ec4899", "#22d3ee"]}
+          amplitude={1.1}
           blend={0.5}
         />
       </div>

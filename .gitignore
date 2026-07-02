@@ -22,6 +22,9 @@ next-env.d.ts.bak
 # ---- Vercel ----
 .vercel
 
+# ---- Claude Code (preview helper local) ----
+.claude/
+
 # ---- Logs ----
 npm-debug.log*
 yarn-debug.log*
