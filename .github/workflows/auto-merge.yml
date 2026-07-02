@@ -1,0 +1,52 @@
+name: Auto Merge
+
+# Dispara quando o workflow "CI" termina. Repositórios privados no plano Free
+# não suportam branch protection / required status checks (recurso pago do
+# GitHub Pro), então o "gate" de qualidade é feito aqui: só mergeamos se o
+# workflow_run associado tiver terminado com sucesso.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    name: Merge PR if CI passed
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Find and merge associated PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER=$(gh api "repos/$REPO/commits/$HEAD_SHA/pulls" --jq '.[0].number // empty')
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "Nenhum PR aberto encontrado para o commit $HEAD_SHA."
+            exit 0
+          fi
+
+          IS_DRAFT=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json isDraft --jq '.isDraft')
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "PR #$PR_NUMBER ainda é rascunho, não será mergeado."
+            exit 0
+          fi
+
+          BASE_REF=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json baseRefName --jq '.baseRefName')
+          if [ "$BASE_REF" != "main" ]; then
+            echo "PR #$PR_NUMBER não é contra main (base: $BASE_REF), ignorando."
+            exit 0
+          fi
+
+          echo "CI passou. Mergeando PR #$PR_NUMBER..."
+          gh pr merge "$PR_NUMBER" --repo "$REPO" --squash --delete-branch
