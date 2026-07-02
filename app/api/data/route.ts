@@ -19,7 +19,7 @@ const MAX_CANDIDATES = 5;
  * when nothing complete has been uploaded yet.
  */
 export async function GET() {
-  const email = getSession();
+  const email = await getSession();
   if (!email) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }

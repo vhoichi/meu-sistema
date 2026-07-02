@@ -33,7 +33,7 @@ function toFloat(value: string | undefined): number {
 }
 
 export async function POST(request: Request) {
-  const email = getSession();
+  const email = await getSession();
   if (!email) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }
