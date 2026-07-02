@@ -1,7 +1,8 @@
 import crypto from "crypto";
 import { cookies } from "next/headers";
+import { SESSION_COOKIE } from "./sessionCookie";
 
-export const SESSION_COOKIE = "session";
+export { SESSION_COOKIE };
 const SESSION_TTL_SECONDS = 60 * 60 * 8; // 8 hours
 
 function getSecret(): string {

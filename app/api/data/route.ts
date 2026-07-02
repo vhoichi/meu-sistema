@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 /**
  * Returns the drink rows from the most recent upload batch, plus metadata.
@@ -13,6 +14,8 @@ export async function GET() {
   if (!email) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }
+
+  const supabaseAdmin = getSupabaseAdmin();
 
   const { data: latest, error: latestError } = await supabaseAdmin
     .from("uploads")
