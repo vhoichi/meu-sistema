@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import Papa from "papaparse";
 import { getSession } from "@/lib/auth";
-import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 type CsvRow = {
   country?: string;
@@ -81,6 +82,8 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  const supabaseAdmin = getSupabaseAdmin();
 
   // 1) Create the upload batch record.
   const { data: upload, error: uploadError } = await supabaseAdmin
